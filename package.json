@@ -1,0 +1,12 @@
+{
+  "name": "konica-computers-erp",
+  "version": "1.0.0",
+  "description": "Konica Computers ERP and E-Commerce Platform",
+  "private": true,
+  "scripts": {
+    "dev:frontend": "pnpm -F frontend dev",
+    "dev:backend": "pnpm -F backend dev",
+    "dev": "pnpm -r --parallel run dev",
+    "build": "pnpm -r run build"
+  }
+}

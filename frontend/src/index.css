@@ -1,0 +1,13 @@
+/* Global styles overridden by MUI CssBaseline */
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Ensure MUI Grid containers always stretch to fill their parent */
+.MuiGrid-container {
+  width: 100% !important;
+}
