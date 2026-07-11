@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Box, Drawer, AppBar, Toolbar, Typography, List, ListItem, ListItemIcon, ListItemText, CssBaseline, Avatar, IconButton } from '@mui/material';
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Box, Drawer, AppBar, Toolbar, Typography, List, ListItem, ListItemIcon, ListItemText, CssBaseline, Avatar, IconButton, Menu, MenuItem } from '@mui/material';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
@@ -22,8 +22,24 @@ const drawerWidth = 240;
 
 const AdminLayout: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const currentWidth = collapsed ? 80 : drawerWidth;
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    handleMenuClose();
+    navigate('/login');
+  };
 
   const menuItems = [
     { text: 'Dashboard', icon: <DashboardIcon fontSize="small" />, path: '/admin' },
@@ -68,13 +84,28 @@ const AdminLayout: React.FC = () => {
             <IconButton sx={{ color: 'text.secondary' }}>
               <NotificationsNoneIcon />
             </IconButton>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box 
+              sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer' }}
+              onClick={handleMenuOpen}
+            >
               <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.dark', fontSize: '0.9rem' }}>DD</Avatar>
               <Typography variant="body2" sx={{ fontWeight: 600, color: 'text.primary' }}>Debapriya Das</Typography>
               <Box sx={{ bgcolor: 'rgba(0, 229, 255, 0.1)', color: 'primary.main', px: 1, py: 0.25, borderRadius: 1, fontSize: '0.75rem', fontWeight: 700 }}>
                 Admin
               </Box>
             </Box>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+              transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+              anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+              sx={{ mt: 1 }}
+            >
+              <MenuItem onClick={handleLogout} sx={{ fontSize: '0.9rem', color: 'error.main', minWidth: 120 }}>
+                Logout
+              </MenuItem>
+            </Menu>
           </Box>
         </Toolbar>
       </AppBar>
@@ -131,7 +162,7 @@ const AdminLayout: React.FC = () => {
                     {item.icon}
                   </ListItemIcon>
                   {!collapsed && (
-                    <ListItemText primary={item.text} primaryTypographyProps={{ fontSize: '0.85rem', fontWeight: isActive ? 600 : 500 }} />
+                    <ListItemText primary={<Typography sx={{ fontSize: '0.85rem', fontWeight: isActive ? 600 : 500 }}>{item.text}</Typography>} />
                   )}
                 </ListItem>
               );
@@ -149,7 +180,7 @@ const AdminLayout: React.FC = () => {
             <ListItemIcon sx={{ color: 'inherit', minWidth: collapsed ? 0 : 36, display: 'flex', justifyContent: 'center' }}>
               {collapsed ? <MenuIcon fontSize="small" /> : <KeyboardArrowLeftIcon fontSize="small" />}
             </ListItemIcon>
-            {!collapsed && <ListItemText primary="Collapse" primaryTypographyProps={{ fontSize: '0.85rem', fontWeight: 500 }} />}
+            {!collapsed && <ListItemText primary={<Typography sx={{ fontSize: '0.85rem', fontWeight: 500 }}>Collapse</Typography>} />}
           </ListItem>
         </Box>
       </Drawer>

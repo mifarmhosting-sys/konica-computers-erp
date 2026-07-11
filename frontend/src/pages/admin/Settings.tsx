@@ -20,7 +20,7 @@ const Settings: React.FC = () => {
       <Typography variant="h5" sx={{ fontWeight: 700, color: 'text.primary', mb: 3 }}>Settings</Typography>
 
       <Box sx={{ borderBottom: '1px solid rgba(255,255,255,0.05)', mb: 3 }}>
-        <Tabs value={tab} onChange={(e, v) => setTab(v)}>
+        <Tabs value={tab} onChange={(_e, v) => setTab(v)}>
           <Tab label="General Settings" sx={{ color: tab === 0 ? '#00e5ff !important' : 'text.secondary' }} />
           <Tab label="Master Setup" />
         </Tabs>
@@ -42,20 +42,20 @@ const Settings: React.FC = () => {
             </Box>
 
             <Grid container spacing={3} sx={{ mb: 3 }}>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 0.5 }}>Business Name</Typography>
                 <TextField size="small" fullWidth defaultValue="Konica Computers" sx={{ bgcolor: 'rgba(255,255,255,0.02)' }} />
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 0.5 }}>GST Number (GSTIN)</Typography>
                 <TextField size="small" fullWidth defaultValue="19ALGPQ2790L1ZP" sx={{ bgcolor: 'rgba(255,255,255,0.02)' }} />
                 <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mt: 0.5 }}>15-character GSTIN</Typography>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 0.5 }}>Phone</Typography>
                 <TextField size="small" fullWidth defaultValue="+919674601387" sx={{ bgcolor: 'rgba(255,255,255,0.02)' }} />
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 0.5 }}>Address</Typography>
                 <TextField size="small" fullWidth defaultValue="75 RAJ KRISHNA CHATTERJEE ROAD KASBA KOLKATA 700042" sx={{ bgcolor: 'rgba(255,255,255,0.02)' }} />
               </Grid>
@@ -79,12 +79,12 @@ const Settings: React.FC = () => {
             </Box>
 
             <Grid container spacing={3} sx={{ mb: 3 }}>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 0.5 }}>Invoice Prefix</Typography>
                 <TextField size="small" fullWidth defaultValue="KC-" sx={{ bgcolor: 'rgba(255,255,255,0.02)' }} />
                 <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mt: 0.5 }}>e.g. KC- → KC-0001</Typography>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 0.5 }}>Low Stock Default Threshold</Typography>
                 <TextField size="small" fullWidth type="number" defaultValue="2" sx={{ bgcolor: 'rgba(255,255,255,0.02)' }} />
                 <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mt: 0.5 }}>Alert when stock falls below this number</Typography>
@@ -210,7 +210,7 @@ const Settings: React.FC = () => {
             </Box>
 
             <Grid container spacing={3}>
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <Box sx={{ p: 2, bgcolor: 'rgba(255,255,255,0.02)', borderRadius: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
                   <Box sx={{ bgcolor: 'rgba(33, 150, 243, 0.1)', p: 1, borderRadius: 1 }}>
                     <Inventory2OutlinedIcon sx={{ color: '#2196f3', fontSize: 20 }} />
@@ -221,7 +221,7 @@ const Settings: React.FC = () => {
                   </Box>
                 </Box>
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <Box sx={{ p: 2, bgcolor: 'rgba(255,255,255,0.02)', borderRadius: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
                   <Box sx={{ bgcolor: 'rgba(0, 229, 255, 0.1)', p: 1, borderRadius: 1 }}>
                     <PeopleOutlinedIcon sx={{ color: '#00e5ff', fontSize: 20 }} />
@@ -232,7 +232,7 @@ const Settings: React.FC = () => {
                   </Box>
                 </Box>
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <Box sx={{ p: 2, bgcolor: 'rgba(255,255,255,0.02)', borderRadius: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
                   <Box sx={{ bgcolor: 'rgba(76, 175, 80, 0.1)', p: 1, borderRadius: 1 }}>
                     <RequestQuoteOutlinedIcon sx={{ color: '#4caf50', fontSize: 20 }} />

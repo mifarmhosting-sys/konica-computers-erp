@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, Button, TextField, Tabs, Tab, Paper, InputAdornment } from '@mui/material';
+import { Box, Typography, Button, TextField, Tabs, Tab, Paper } from '@mui/material';
 import ShieldOutlinedIcon from '@mui/icons-material/ShieldOutlined';
 import BarChartOutlinedIcon from '@mui/icons-material/BarChartOutlined';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
@@ -91,7 +91,7 @@ const Auth: React.FC = () => {
         {/* Right Panel */}
         <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: '#050505' }}>
           <Paper sx={{ width: '100%', maxWidth: 400, bgcolor: '#0a0a0a', p: 0, overflow: 'hidden', borderRadius: 3 }}>
-            <Tabs value={tab} onChange={(e, v) => setTab(v)} variant="fullWidth" sx={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+            <Tabs value={tab} onChange={(_e, v) => setTab(v)} variant="fullWidth" sx={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
               <Tab label="Register" />
               <Tab label="Sign In" />
             </Tabs>

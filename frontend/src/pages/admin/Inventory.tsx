@@ -20,7 +20,7 @@ const Inventory: React.FC = () => {
       </Box>
 
       <Box sx={{ borderBottom: '1px solid rgba(255,255,255,0.05)', mb: 3 }}>
-        <Tabs value={tab} onChange={(e, v) => setTab(v)}>
+        <Tabs value={tab} onChange={(_e, v) => setTab(v)}>
           <Tab label="Stock Overview" />
           <Tab label="Stock Movements" />
           <Tab label={
@@ -70,9 +70,11 @@ const Inventory: React.FC = () => {
               placeholder="Search SKU, name, brand, category..."
               variant="outlined"
               size="small"
-              InputProps={{
-                startAdornment: <InputAdornment position="start"><SearchIcon sx={{ color: 'text.secondary', fontSize: 20 }} /></InputAdornment>,
-                sx: { bgcolor: 'rgba(255,255,255,0.02)' }
+              slotProps={{
+                input: {
+                  startAdornment: <InputAdornment position="start"><SearchIcon sx={{ color: 'text.secondary', fontSize: 20 }} /></InputAdornment>,
+                  sx: { bgcolor: 'rgba(255,255,255,0.02)' }
+                }
               }}
             />
             <Select size="small" defaultValue="all" sx={{ minWidth: 150, bgcolor: 'rgba(255,255,255,0.02)' }}>

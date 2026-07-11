@@ -37,9 +37,10 @@ const BankAccountForm: React.FC<{ title: string }> = ({ title }) => (
         size="small" 
         fullWidth 
         placeholder="0.00" 
-        type="number"
-        InputProps={{
-          startAdornment: <InputAdornment position="start"><CurrencyRupeeIcon sx={{ fontSize: 16 }} /></InputAdornment>,
+        slotProps={{
+          input: {
+            startAdornment: <InputAdornment position="start"><CurrencyRupeeIcon sx={{ fontSize: 16 }} /></InputAdornment>,
+          }
         }}
         sx={{ bgcolor: 'rgba(255,255,255,0.02)' }} 
       />

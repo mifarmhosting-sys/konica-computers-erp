@@ -25,7 +25,7 @@ const Home: React.FC = () => {
 
       <Grid container spacing={4}>
         {[1, 2, 3].map((item) => (
-          <Grid item xs={12} md={4} key={item}>
+          <Grid size={{ xs: 12, md: 4 }} key={item}>
             <Paper sx={{ p: 4, textAlign: 'center', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
               <Typography variant="h6" gutterBottom>Feature {item}</Typography>
               <Typography variant="body2" color="text.secondary">

@@ -30,7 +30,7 @@ const Financial: React.FC = () => {
       </Box>
 
       <Box sx={{ borderBottom: '1px solid rgba(255,255,255,0.05)', mb: 3 }}>
-        <Tabs value={tab} onChange={(e, v) => setTab(v)}>
+        <Tabs value={tab} onChange={(_e, v) => setTab(v)}>
           <Tab label="Trial Balance" />
           <Tab label="P&L Account" />
           <Tab label="Balance Sheet" />

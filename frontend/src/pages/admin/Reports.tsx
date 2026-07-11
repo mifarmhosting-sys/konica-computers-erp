@@ -15,7 +15,7 @@ const Reports: React.FC = () => {
       <Paper sx={{ mb: 3, border: '1px solid rgba(255,255,255,0.05)', borderRadius: 2 }}>
         <Tabs 
           value={tab} 
-          onChange={(e, v) => setTab(v)}
+          onChange={(_e, v) => setTab(v)}
           variant="scrollable"
           scrollButtons="auto"
           sx={{ minHeight: 48, '& .MuiTab-root': { minHeight: 48, py: 0 } }}
@@ -48,7 +48,7 @@ const Reports: React.FC = () => {
           </Box>
 
           <Grid container spacing={2} sx={{ mb: 3 }}>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <Paper sx={{ p: 3, borderRadius: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>TOTAL SALES</Typography>
@@ -57,7 +57,7 @@ const Reports: React.FC = () => {
                 <Typography variant="h5" sx={{ color: '#4caf50', fontWeight: 700 }}>₹0.00</Typography>
               </Paper>
             </Grid>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <Paper sx={{ p: 3, borderRadius: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>INVOICE COUNT</Typography>
@@ -66,7 +66,7 @@ const Reports: React.FC = () => {
                 <Typography variant="h5" sx={{ color: 'primary.main', fontWeight: 700 }}>0</Typography>
               </Paper>
             </Grid>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <Paper sx={{ p: 3, borderRadius: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>TOTAL CGST</Typography>
@@ -75,7 +75,7 @@ const Reports: React.FC = () => {
                 <Typography variant="h5" sx={{ color: '#ffb300', fontWeight: 700 }}>₹0.00</Typography>
               </Paper>
             </Grid>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <Paper sx={{ p: 3, borderRadius: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>TOTAL SGST</Typography>

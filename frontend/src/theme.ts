@@ -60,7 +60,7 @@ export const theme = createTheme({
           padding: '10px 24px',
           transition: 'all 0.2s ease-in-out',
         },
-        containedPrimary: {
+        contained: {
           color: '#000000',
           '&:hover': {
             backgroundColor: '#00B2CC',
