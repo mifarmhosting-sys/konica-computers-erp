@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, Paper, Tabs, Tab, TextField, InputAdornment, Select, MenuItem, Badge } from '@mui/material';
+import { Box, Typography, Paper, Tabs, Tab, TextField, InputAdornment, Select, MenuItem } from '@mui/material';
 import LayersIcon from '@mui/icons-material/Layers';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import SearchIcon from '@mui/icons-material/Search';
@@ -24,16 +24,25 @@ const Inventory: React.FC = () => {
           <Tab label="Stock Overview" />
           <Tab label="Stock Movements" />
           <Tab label={
-            <Badge badgeContent={2} sx={{ 
-              '& .MuiBadge-badge': { 
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              Low Stock Alerts
+              <Box sx={{ 
                 bgcolor: '#f44336', 
                 color: 'white', 
-                fontWeight: 700,
-                right: -15
-              } 
-            }}>
-              <Box sx={{ pr: 2 }}>Low Stock Alerts</Box>
-            </Badge>
+                borderRadius: '10px',
+                px: 1,
+                minWidth: 20, 
+                height: 20, 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                fontSize: '0.75rem',
+                fontWeight: 'bold',
+                lineHeight: 1
+              }}>
+                2
+              </Box>
+            </Box>
           } />
           <Tab label="Analytics" />
         </Tabs>

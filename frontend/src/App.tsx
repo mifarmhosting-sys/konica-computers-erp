@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import { theme } from './theme';
 import api from './services/api';
 import ProtectedRoute from './components/ProtectedRoute';
-import Login from './pages/Login';
+import Auth from './pages/Auth';
 import { fetchCurrentUser } from './store/slices/authSlice';
 import type { AppDispatch } from './store';
 
@@ -44,7 +44,7 @@ export default function App() {
       <CssBaseline />
       <BrowserRouter>
         <Routes>
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Auth />} />
           
           {/* Protected Admin Routes */}
           <Route element={<ProtectedRoute />}>

@@ -1,201 +1,280 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { 
-  Box, Typography, Paper, TextField, Button, Table, TableBody, 
-  TableCell, TableContainer, TableHead, TableRow, Dialog, 
-  DialogTitle, DialogContent, DialogActions, Grid, MenuItem, Chip, IconButton
+  Box, Typography, Button, Table, TableBody, 
+  TableCell, TableContainer, TableHead, TableRow, Grid, TextField, MenuItem, Tabs, Tab
 } from '@mui/material';
-import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
-import api from '../../services/api';
+import LocalMallOutlinedIcon from '@mui/icons-material/LocalMallOutlined';
+import AddIcon from '@mui/icons-material/Add';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
+import DescriptionIcon from '@mui/icons-material/Description';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
+import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
+import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
 
-interface Supplier { id: number; name: string; }
-interface Product { id: number; name: string; cost_price: number; }
-interface POItem { product_id: number; quantity: number; unit_cost: number; }
-interface PurchaseOrder {
-  id: number;
-  order_date: string;
-  status: string;
-  total_amount: number;
-  supplier: Supplier;
-}
 
 export default function Purchases() {
-  const [orders, setOrders] = useState<PurchaseOrder[]>([]);
-  const [suppliers, setSuppliers] = useState<Supplier[]>([]);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [openModal, setOpenModal] = useState(false);
-  
-  const [supplierId, setSupplierId] = useState('');
-  const [orderDate, setOrderDate] = useState(new Date().toISOString().split('T')[0]);
-  const [items, setItems] = useState<POItem[]>([]);
+  const [activeTab, setActiveTab] = useState(0);
 
-  const fetchData = async () => {
-    try {
-      const [ordRes, supRes, prodRes] = await Promise.all([
-        api.get('/api/purchase-orders'),
-        api.get('/api/suppliers'),
-        api.get('/api/products')
-      ]);
-      setOrders(ordRes.data.data);
-      setSuppliers(supRes.data.data);
-      setProducts(prodRes.data.data);
-    } catch (err) {
-      console.error('Failed to fetch data');
-    }
-  };
+  // Keep the state for products, categories, etc. just in case
+  // const [products, setProducts] = useState<any[]>([]);
+  const [orders] = useState<any[]>([]);
 
   useEffect(() => {
-    fetchData();
+    // Dummy fetch or real fetch
+    // api.get('/api/purchase-orders').then(res => setOrders(res.data.data)).catch(() => {});
   }, []);
 
-  const addItem = () => {
-    setItems([...items, { product_id: 0, quantity: 1, unit_cost: 0 }]);
-  };
-
-  const removeItem = (index: number) => {
-    const newItems = [...items];
-    newItems.splice(index, 1);
-    setItems(newItems);
-  };
-
-  const updateItem = (index: number, field: keyof POItem, value: number) => {
-    const newItems = [...items];
-    newItems[index][field] = value;
-    
-    // Auto-fill unit_cost if product changes
-    if (field === 'product_id') {
-      const product = products.find(p => p.id === value);
-      if (product) newItems[index].unit_cost = product.cost_price;
-    }
-    setItems(newItems);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (items.length === 0 || items.some(i => i.product_id === 0)) {
-      alert("Please add valid products to the order.");
-      return;
-    }
-
-    try {
-      await api.post('/api/purchase-orders', {
-        supplier_id: supplierId,
-        order_date: orderDate,
-        items: items
-      });
-      setOpenModal(false);
-      setSupplierId('');
-      setItems([]);
-      fetchData();
-    } catch (err) {
-      const error = err as { response?: { data?: { message?: string } } };
-      alert(error.response?.data?.message || 'Failed to create PO');
-    }
-  };
-
-  const handleMarkReceived = async (id: number) => {
-    if (window.confirm('Mark this PO as received? This will instantly increase inventory stock!')) {
-      try {
-        await api.put(`/api/purchase-orders/${id}`, { status: 'received' });
-        fetchData();
-      } catch (err) {
-        alert('Failed to update status');
-      }
-    }
-  };
-
-  const grandTotal = items.reduce((sum, item) => sum + (item.quantity * item.unit_cost), 0);
-
   return (
-    <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-        <Typography variant="h4" sx={{ fontWeight: 'bold' }}>Purchase Orders</Typography>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={() => setOpenModal(true)}>
-          Create PO
-        </Button>
+    <Box sx={{ width: '100%', maxWidth: 1600, mx: 'auto', p: { xs: 2, md: 3 } }}>
+      
+      {/* Header Section */}
+      <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, mb: 3 }}>
+        <Box sx={{ p: 1.5, bgcolor: 'rgba(0, 229, 255, 0.1)', borderRadius: 2, display: 'flex' }}>
+          <LocalMallOutlinedIcon sx={{ color: '#00e5ff', fontSize: 28 }} />
+        </Box>
+        <Box>
+          <Typography variant="h5" sx={{ fontWeight: 700, color: 'white', mb: 0.5 }}>
+            Purchase Management
+          </Typography>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            Record purchases from vendors, manage categories & brands, and track payments.
+          </Typography>
+        </Box>
       </Box>
 
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow sx={{ bgcolor: 'primary.main' }}>
-              <TableCell sx={{ color: 'primary.contrastText' }}>PO ID</TableCell>
-              <TableCell sx={{ color: 'primary.contrastText' }}>Date</TableCell>
-              <TableCell sx={{ color: 'primary.contrastText' }}>Supplier</TableCell>
-              <TableCell sx={{ color: 'primary.contrastText' }}>Status</TableCell>
-              <TableCell align="right" sx={{ color: 'primary.contrastText' }}>Total Amount</TableCell>
-              <TableCell align="right" sx={{ color: 'primary.contrastText' }}>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {orders.map((order) => (
-              <TableRow key={order.id}>
-                <TableCell sx={{ fontWeight: 'bold' }}>#{order.id}</TableCell>
-                <TableCell>{order.order_date}</TableCell>
-                <TableCell>{order.supplier?.name}</TableCell>
-                <TableCell>
-                  <Chip 
-                    size="small" 
-                    label={order.status.toUpperCase()} 
-                    color={order.status === 'received' ? 'success' : order.status === 'pending' ? 'warning' : 'error'} 
-                  />
-                </TableCell>
-                <TableCell align="right" sx={{ fontWeight: 'bold' }}>₹{Number(order.total_amount).toFixed(2)}</TableCell>
-                <TableCell align="right">
-                  {order.status === 'pending' && (
-                    <Button size="small" variant="outlined" color="success" onClick={() => handleMarkReceived(order.id)}>
-                      Mark Received
-                    </Button>
-                  )}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      {/* Tabs Section */}
+      <Box sx={{ borderBottom: '1px solid rgba(255,255,255,0.05)', mb: 3 }}>
+        <Tabs 
+          value={activeTab} 
+          onChange={(_e, v) => setActiveTab(v)}
+          sx={{
+            '& .MuiTabs-indicator': { backgroundColor: '#00e5ff' },
+            '& .MuiTab-root': { 
+              color: 'text.secondary', 
+              textTransform: 'none', 
+              fontWeight: 600, 
+              fontSize: '0.95rem',
+              minHeight: 48,
+              gap: 1
+            },
+            '& .Mui-selected': { color: '#00e5ff !important' },
+          }}
+        >
+          <Tab icon={<LocalOfferOutlinedIcon fontSize="small" />} iconPosition="start" label="Purchase Entry" />
+          <Tab icon={<AccountBalanceWalletOutlinedIcon fontSize="small" />} iconPosition="start" label="Vendor Payments" />
+          <Tab icon={<CategoryOutlinedIcon fontSize="small" />} iconPosition="start" label="Categories & Brands" />
+        </Tabs>
+      </Box>
 
-      <Dialog open={openModal} onClose={() => setOpenModal(false)} maxWidth="md" fullWidth>
-        <form onSubmit={handleSubmit}>
-          <DialogTitle>Create New Purchase Order</DialogTitle>
-          <DialogContent dividers>
-            <Grid container spacing={2} sx={{ mb: 3 }}>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField select fullWidth required label="Supplier" value={supplierId} onChange={e => setSupplierId(e.target.value)}>
-                  {suppliers.map(s => <MenuItem key={s.id} value={s.id}>{s.name}</MenuItem>)}
-                </TextField>
+      {activeTab === 0 && (
+        <Box>
+          {/* Action Buttons */}
+          <Box sx={{ display: 'flex', gap: 2, mb: 4 }}>
+            <Button 
+              variant="contained" 
+              startIcon={<AddIcon />} 
+              sx={{ 
+                bgcolor: '#00e5ff', 
+                color: 'black', 
+                fontWeight: 700,
+                textTransform: 'none',
+                borderRadius: 2,
+                px: 3,
+                '&:hover': { bgcolor: '#00b2cc' }
+              }}
+            >
+              (+) New Purchase Entry
+            </Button>
+            <Button 
+              variant="outlined" 
+              startIcon={<UploadFileIcon />} 
+              sx={{ 
+                color: '#00e5ff', 
+                borderColor: 'rgba(0, 229, 255, 0.5)',
+                fontWeight: 600,
+                textTransform: 'none',
+                borderRadius: 2,
+                '&:hover': { borderColor: '#00e5ff', bgcolor: 'rgba(0, 229, 255, 0.05)' }
+              }}
+            >
+              Bulk Upload (.xlsx)
+            </Button>
+          </Box>
+
+          {/* Purchase History Table */}
+          <Box sx={{ 
+            bgcolor: '#0a0a0a', 
+            borderRadius: 3, 
+            border: '1px solid rgba(255,255,255,0.05)',
+            overflow: 'hidden',
+            mb: 4
+          }}>
+            <Box sx={{ p: 2, borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Typography sx={{ fontWeight: 700, color: 'white', px: 1 }}>Purchase History</Typography>
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <Button 
+                  size="small" 
+                  variant="outlined" 
+                  startIcon={<DescriptionIcon />} 
+                  sx={{ color: '#4caf50', borderColor: 'rgba(76, 175, 80, 0.5)', textTransform: 'none', '&:hover': { borderColor: '#4caf50' } }}
+                >
+                  Excel
+                </Button>
+                <Button 
+                  size="small" 
+                  variant="outlined" 
+                  startIcon={<PictureAsPdfIcon />} 
+                  sx={{ color: '#f44336', borderColor: 'rgba(244, 67, 54, 0.5)', textTransform: 'none', '&:hover': { borderColor: '#f44336' } }}
+                >
+                  PDF
+                </Button>
+              </Box>
+            </Box>
+            
+            <TableContainer>
+              <Table size="small">
+                <TableHead>
+                  <TableRow sx={{ bgcolor: 'rgba(255,255,255,0.02)' }}>
+                    {['Date', 'Vendor Name', 'Address', 'GST', 'Phone', 'Email', 'State Name', 'State Code', 'Amount', 'Tax', 'Total'].map((head) => (
+                      <TableCell key={head} sx={{ color: 'text.secondary', fontWeight: 600, borderBottom: '1px solid rgba(255,255,255,0.05)', py: 1.5, fontSize: '0.75rem' }}>
+                        {head}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {orders.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={11} align="center" sx={{ py: 6, color: 'text.secondary', borderBottom: 'none' }}>
+                        No purchases recorded yet.
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    orders.map((order, i) => (
+                      <TableRow key={i}>
+                        <TableCell sx={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>{order.date}</TableCell>
+                        <TableCell sx={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>{order.vendor}</TableCell>
+                        <TableCell colSpan={9} sx={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>...</TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
+
+          {/* Product Entry Form Block */}
+          <Box sx={{ 
+            bgcolor: '#0a0a0a', 
+            borderRadius: 3, 
+            border: '1px solid rgba(255,255,255,0.05)',
+            p: 3,
+            mb: 4
+          }}>
+            <Typography variant="overline" sx={{ color: 'text.secondary', fontWeight: 700, mb: 2, display: 'block' }}>PRODUCT #1</Typography>
+            
+            <Grid container spacing={3}>
+              <Grid size={{ xs: 12 }}>
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, mb: 1, display: 'block' }}>Product Name *</Typography>
+                <TextField 
+                  fullWidth 
+                  placeholder="e.g., HP Pavilion 15 Laptop i5 12th Gen" 
+                  variant="outlined" 
+                  size="small" 
+                  sx={textFieldStyles}
+                />
               </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField fullWidth required type="date" label="Order Date" value={orderDate} onChange={e => setOrderDate(e.target.value)} slotProps={{ inputLabel: { shrink: true } }} />
+
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, mb: 1, display: 'block' }}>Category *</Typography>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <TextField select fullWidth value="" variant="outlined" size="small" sx={textFieldStyles}>
+                    <MenuItem value="">Select category</MenuItem>
+                  </TextField>
+                  <Button variant="outlined" sx={{ minWidth: 40, p: 0, borderColor: 'rgba(255,255,255,0.1)' }}><AddIcon fontSize="small" /></Button>
+                </Box>
+              </Grid>
+
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, mb: 1, display: 'block' }}>Brand *</Typography>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <TextField select fullWidth value="" variant="outlined" size="small" sx={textFieldStyles}>
+                    <MenuItem value="">Select brand</MenuItem>
+                  </TextField>
+                  <Button variant="outlined" sx={{ minWidth: 40, p: 0, borderColor: 'rgba(255,255,255,0.1)' }}><AddIcon fontSize="small" /></Button>
+                </Box>
+              </Grid>
+
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, mb: 1, display: 'block' }}>SKU (auto-generated)</Typography>
+                <TextField fullWidth placeholder="Select category & brand" variant="outlined" size="small" disabled sx={textFieldStyles} />
+              </Grid>
+
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, mb: 1, display: 'block' }}>HSN / SAC Code</Typography>
+                <TextField fullWidth placeholder="e.g. 8471" variant="outlined" size="small" sx={textFieldStyles} />
+              </Grid>
+
+              <Grid size={{ xs: 12, md: 4 }}>
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, mb: 1, display: 'block' }}>Qty *</Typography>
+                <TextField fullWidth type="number" defaultValue={1} variant="outlined" size="small" sx={textFieldStyles} />
+              </Grid>
+
+              <Grid size={{ xs: 12, md: 4 }}>
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, mb: 1, display: 'block' }}>Unit Cost (₹) *</Typography>
+                <TextField fullWidth type="number" placeholder="0.00" variant="outlined" size="small" sx={textFieldStyles} />
+              </Grid>
+
+              <Grid size={{ xs: 12, md: 4 }}>
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, mb: 1, display: 'block' }}>Tax %</Typography>
+                <TextField select fullWidth value="18" variant="outlined" size="small" sx={textFieldStyles}>
+                  <MenuItem value="18">18% (default)</MenuItem>
+                </TextField>
               </Grid>
             </Grid>
+          </Box>
 
-            <Typography variant="h6" sx={{ mb: 2 }}>Order Items</Typography>
-            {items.map((item, index) => (
-              <Box key={index} sx={{ display: 'flex', gap: 2, mb: 2, alignItems: 'center' }}>
-                <TextField select sx={{ flex: 2 }} required label="Product" value={item.product_id || ''} onChange={e => updateItem(index, 'product_id', Number(e.target.value))}>
-                  {products.map(p => <MenuItem key={p.id} value={p.id}>{p.name}</MenuItem>)}
-                </TextField>
-                <TextField sx={{ flex: 1 }} required type="number" label="Qty" slotProps={{ htmlInput: { min: 1 } }} value={item.quantity} onChange={e => updateItem(index, 'quantity', Number(e.target.value))} />
-                <TextField sx={{ flex: 1 }} required type="number" label="Unit Cost" slotProps={{ htmlInput: { step: '0.01', min: 0 } }} value={item.unit_cost} onChange={e => updateItem(index, 'unit_cost', Number(e.target.value))} />
-                <Typography sx={{ flex: 1, fontWeight: 'bold' }}>₹{(item.quantity * item.unit_cost).toFixed(2)}</Typography>
-                <IconButton color="error" onClick={() => removeItem(index)}><DeleteIcon /></IconButton>
-              </Box>
-            ))}
-            
-            <Button variant="outlined" startIcon={<AddIcon />} onClick={addItem} sx={{ mb: 2 }}>
-              Add Product to Order
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Button 
+              startIcon={<AddIcon />} 
+              sx={{ color: 'text.secondary', textTransform: 'none', fontWeight: 600, '&:hover': { color: 'white', bgcolor: 'transparent' } }}
+            >
+              Add Another Product
             </Button>
-            
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Grand Total: ₹{grandTotal.toFixed(2)}</Typography>
-            </Box>
+            <Button 
+              variant="contained" 
+              sx={{ 
+                bgcolor: '#00e5ff', 
+                color: 'black', 
+                fontWeight: 700,
+                textTransform: 'none',
+                borderRadius: 2,
+                px: 3,
+                '&:hover': { bgcolor: '#00b2cc' }
+              }}
+            >
+              Save Products & Record Stock
+            </Button>
+          </Box>
 
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setOpenModal(false)}>Cancel</Button>
-            <Button type="submit" variant="contained" disabled={items.length === 0}>Submit Order</Button>
-          </DialogActions>
-        </form>
-      </Dialog>
+        </Box>
+      )}
+
     </Box>
   );
 }
+
+const textFieldStyles = {
+  '& .MuiOutlinedInput-root': { 
+    bgcolor: 'rgba(255,255,255,0.02)',
+    color: 'white',
+    '& fieldset': { borderColor: 'rgba(255,255,255,0.1)' },
+    '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
+    '&.Mui-focused fieldset': { borderColor: '#00e5ff' }
+  },
+  '& .Mui-disabled': {
+    color: 'rgba(255,255,255,0.3) !important',
+    WebkitTextFillColor: 'rgba(255,255,255,0.3) !important'
+  }
+};
