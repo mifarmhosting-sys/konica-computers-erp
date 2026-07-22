@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Box, Drawer, AppBar, Toolbar, Typography, List, ListItem, ListItemIcon, ListItemText, CssBaseline, Avatar, IconButton, Menu, MenuItem } from '@mui/material';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../store';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
@@ -23,6 +25,7 @@ const drawerWidth = 240;
 const AdminLayout: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useSelector((state: RootState) => state.auth);
   const [collapsed, setCollapsed] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const currentWidth = collapsed ? 80 : drawerWidth;
@@ -88,8 +91,12 @@ const AdminLayout: React.FC = () => {
               sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer' }}
               onClick={handleMenuOpen}
             >
-              <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.dark', fontSize: '0.9rem' }}>DD</Avatar>
-              <Typography variant="body2" sx={{ fontWeight: 600, color: 'text.primary' }}>Debapriya Das</Typography>
+              <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.dark', fontSize: '0.9rem' }}>
+                {user?.name ? user.name.substring(0, 2).toUpperCase() : 'A'}
+              </Avatar>
+              <Typography variant="body2" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                {user?.name || 'Admin'}
+              </Typography>
               <Box sx={{ bgcolor: 'rgba(0, 229, 255, 0.1)', color: 'primary.main', px: 1, py: 0.25, borderRadius: 1, fontSize: '0.75rem', fontWeight: 700 }}>
                 Admin
               </Box>

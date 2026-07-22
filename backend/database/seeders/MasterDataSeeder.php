@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\Role;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -11,6 +12,10 @@ class MasterDataSeeder extends Seeder
 {
     public function run(): void
     {
+        $roles = ['admin', 'staff', 'customer'];
+        foreach ($roles as $roleName) {
+            Role::firstOrCreate(['name' => $roleName]);
+        }
         $brands = ['HP', 'Dell', 'Lenovo', 'Apple', 'Konica'];
         
         foreach ($brands as $brandName) {

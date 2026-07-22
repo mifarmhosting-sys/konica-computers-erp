@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
-import { Box, Typography, Button, TextField, Tabs, Tab, Card, CardContent, Chip, Grid, Alert } from '@mui/material';
+import { Box, Typography, Button, TextField, Card, CardContent, Chip, Grid, Alert } from '@mui/material';
 import ShieldOutlinedIcon from '@mui/icons-material/ShieldOutlined';
 import BarChartOutlinedIcon from '@mui/icons-material/BarChartOutlined';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import MemoryIcon from '@mui/icons-material/Memory';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser, registerUser } from '../store/slices/authSlice';
+import { loginUser } from '../store/slices/authSlice';
 import type { AppDispatch, RootState } from '../store';
 
 const Auth: React.FC = () => {
-  const [tab, setTab] = useState(1); // 1 = Sign In
   const [email, setEmail] = useState('admin@konicacomputers.store');
-  const [password, setPassword] = useState('password');
-  const [name, setName] = useState('');
+  const [password, setPassword] = useState('passw0rd');
   
   const dispatch = useDispatch<AppDispatch>();
   const { isLoading, error } = useSelector((state: RootState) => state.auth);
@@ -21,16 +19,9 @@ const Auth: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (tab === 1) { // Login
-      const resultAction = await dispatch(loginUser({ email, password }));
-      if (loginUser.fulfilled.match(resultAction)) {
-        navigate('/admin');
-      }
-    } else { // Register
-      const resultAction = await dispatch(registerUser({ name, email, password, password_confirmation: password }));
-      if (registerUser.fulfilled.match(resultAction)) {
-        navigate('/admin');
-      }
+    const resultAction = await dispatch(loginUser({ email, password }));
+    if (loginUser.fulfilled.match(resultAction)) {
+      navigate('/admin');
     }
   };
 
@@ -132,56 +123,24 @@ const Auth: React.FC = () => {
           }}
         >
           <Card elevation={0} sx={{ width: '100%', maxWidth: 420, bgcolor: '#0a0a0a', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 3 }}>
-            <Tabs 
-              value={tab} 
-              onChange={(_e, v) => setTab(v)} 
-              variant="fullWidth" 
-              sx={{ 
-                borderBottom: '1px solid rgba(255,255,255,0.05)',
-                '& .MuiTab-root': { py: 2.5, color: 'text.secondary', textTransform: 'none', fontSize: '0.95rem' },
-                '& .Mui-selected': { color: 'white !important', fontWeight: 600 },
-                '& .MuiTabs-indicator': { backgroundColor: 'primary.main', height: 2 }
-              }}
-            >
-              <Tab label="Register" />
-              <Tab label="Sign In" />
-            </Tabs>
+            <Box sx={{ borderBottom: '1px solid rgba(255,255,255,0.05)', p: 2, display: 'flex', justifyContent: 'center' }}>
+               <Typography sx={{ color: 'white', fontWeight: 600 }}>Sign In</Typography>
+            </Box>
             
             <CardContent sx={{ p: { xs: 3, sm: 4 } }}>
               <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                 <Box sx={{ textAlign: 'center', mb: 1 }}>
                   <Typography variant="h5" sx={{ fontWeight: 700, color: 'white', mb: 1 }}>
-                    {tab === 1 ? 'Welcome back' : 'Create an account'}
+                    Welcome back
                   </Typography>
                   <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    {tab === 1 ? 'Sign in to your account' : 'Register for a new account'}
+                    Sign in to your account
                   </Typography>
                 </Box>
 
                 {error && <Alert severity="error" sx={{ mb: 0 }}>{error}</Alert>}
 
-                {tab === 0 && (
-                  <Box>
-                    <Typography variant="caption" sx={{ color: 'white', fontWeight: 600, mb: 1, display: 'block' }}>Full Name</Typography>
-                    <TextField 
-                      fullWidth 
-                      placeholder="Your full name" 
-                      variant="outlined" 
-                      size="small" 
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      sx={{ 
-                        '& .MuiOutlinedInput-root': { 
-                          bgcolor: 'rgba(255,255,255,0.02)',
-                          '& fieldset': { borderColor: 'rgba(255,255,255,0.1)' },
-                          '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
-                          '&.Mui-focused fieldset': { borderColor: 'primary.main' }
-                        }
-                      }}
-                    />
-                  </Box>
-                )}
-                
+
                 <Box>
                   <Typography variant="caption" sx={{ color: 'white', fontWeight: 600, mb: 1, display: 'block' }}>Email</Typography>
                   <TextField 
@@ -208,7 +167,7 @@ const Auth: React.FC = () => {
                   <TextField 
                     fullWidth 
                     type="password" 
-                    placeholder={tab === 0 ? "Minimum 6 characters" : "Your password"} 
+                    placeholder="Your password" 
                     variant="outlined" 
                     size="small"
                     value={password}
@@ -246,19 +205,10 @@ const Auth: React.FC = () => {
                     }
                   }}
                 >
-                  {isLoading ? 'Authenticating...' : (tab === 0 ? 'Register' : 'Sign In')}
+                  {isLoading ? 'Authenticating...' : 'Sign In'}
                 </Button>
 
-                <Typography align="center" variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
-                  {tab === 0 ? 'Already have an account? ' : "Don't have an account? "}
-                  <Typography 
-                    component="span" 
-                    sx={{ color: '#00e5ff', cursor: 'pointer', fontWeight: 600 }} 
-                    onClick={() => setTab(tab === 0 ? 1 : 0)}
-                  >
-                    {tab === 0 ? 'Sign in' : 'Register'}
-                  </Typography>
-                </Typography>
+
               </Box>
             </CardContent>
           </Card>
