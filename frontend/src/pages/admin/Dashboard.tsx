@@ -61,14 +61,19 @@ const TopCard = ({ title, value, icon, iconColor, iconBg, trend }: any) => (
 
 export default function Dashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
-        const res = await api.get('/api/dashboard');
+        const [res, usersRes] = await Promise.all([
+          api.get('/api/dashboard'),
+          api.get('/api/users')
+        ]);
         setStats(res.data.data);
+        setUsers(usersRes.data.data);
       } catch (err) {
         const errorResponse = err as { response?: { data?: { message?: string } } };
         setError(errorResponse.response?.data?.message || 'Failed to load dashboard data');
@@ -226,10 +231,10 @@ export default function Dashboard() {
         </Grid>
       </Grid>
 
-      {/* Top 5 Fast Selling */}
+      {/* Top 5 Fast Selling & Recent Users */}
       <Grid container spacing={2}>
-        <Grid size={{ xs: 12 }}>
-          <Paper sx={{ p: 3, bgcolor: 'rgba(255,255,255,0.02)', borderRadius: 2, border: '1px solid rgba(255,255,255,0.05)' }}>
+        <Grid size={{ xs: 12, md: 8 }}>
+          <Paper sx={{ p: 3, bgcolor: 'rgba(255,255,255,0.02)', borderRadius: 2, border: '1px solid rgba(255,255,255,0.05)', height: '100%' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <FlashIcon sx={{ color: '#00e5ff', fontSize: 20 }} />
@@ -240,6 +245,32 @@ export default function Dashboard() {
             <Box sx={{ py: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', opacity: 0.5 }}>
               <FlashIcon sx={{ fontSize: 32, mb: 1 }} />
               <Typography variant="body2">No sales data yet — products will appear here after your first sale.</Typography>
+            </Box>
+          </Paper>
+        </Grid>
+        <Grid size={{ xs: 12, md: 4 }}>
+          <Paper sx={{ p: 3, bgcolor: 'rgba(255,255,255,0.02)', borderRadius: 2, border: '1px solid rgba(255,255,255,0.05)', height: '100%' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <PeopleIcon sx={{ color: '#2196f3', fontSize: 20 }} />
+                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>Registered Users</Typography>
+              </Box>
+              <Chip label={users.length.toString()} size="small" sx={{ bgcolor: 'rgba(33, 150, 243, 0.1)', color: '#2196f3', border: '1px solid rgba(33, 150, 243, 0.2)', fontWeight: 700, fontSize: '0.75rem' }} />
+            </Box>
+            
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0, maxHeight: 200, overflowY: 'auto' }}>
+              {users.map((user, i) => (
+                <Box key={user.id || i} sx={{ py: 1.5, borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Box>
+                    <Typography variant="body2" sx={{ fontWeight: 600 }}>{user.name}</Typography>
+                    <Typography variant="caption" sx={{ color: 'text.secondary' }}>{user.email}</Typography>
+                  </Box>
+                  <Chip label="User" size="small" sx={{ bgcolor: 'rgba(255,255,255,0.05)', color: 'text.secondary', fontSize: '0.7rem' }} />
+                </Box>
+              ))}
+              {users.length === 0 && (
+                <Typography variant="body2" sx={{ color: 'text.secondary', textAlign: 'center', py: 2 }}>No users found.</Typography>
+              )}
             </Box>
           </Paper>
         </Grid>

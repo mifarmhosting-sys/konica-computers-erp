@@ -6,7 +6,7 @@ import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import MemoryIcon from '@mui/icons-material/Memory';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser } from '../store/slices/authSlice';
+import { loginUser, registerUser } from '../store/slices/authSlice';
 import type { AppDispatch, RootState } from '../store';
 
 const Auth: React.FC = () => {
@@ -26,8 +26,11 @@ const Auth: React.FC = () => {
       if (loginUser.fulfilled.match(resultAction)) {
         navigate('/admin');
       }
-    } else { // Register placeholder
-      alert("Registration endpoint not connected yet!");
+    } else { // Register
+      const resultAction = await dispatch(registerUser({ name, email, password, password_confirmation: password }));
+      if (registerUser.fulfilled.match(resultAction)) {
+        navigate('/admin');
+      }
     }
   };
 

@@ -40,6 +40,20 @@ export const loginUser = createAsyncThunk('auth/login', async (credentials: any,
     }
 });
 
+export const registerUser = createAsyncThunk('auth/register', async (credentials: any, { rejectWithValue }) => {
+    try {
+        await api.get('/sanctum/csrf-cookie'); // CSRF Handshake
+        const response = await api.post('/api/register', credentials);
+        return response.data.user;
+    } catch (error: any) {
+        return rejectWithValue(
+            error.response?.data?.message || 
+            error.message || 
+            'Registration failed'
+        );
+    }
+});
+
 export const fetchCurrentUser = createAsyncThunk('auth/me', async (_, { rejectWithValue }) => {
     try {
         const response = await api.get('/api/me');
@@ -75,6 +89,20 @@ const authSlice = createSlice({
                 state.user = action.payload;
             })
             .addCase(loginUser.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload as string;
+            })
+            // Register
+            .addCase(registerUser.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(registerUser.fulfilled, (state, action: PayloadAction<User>) => {
+                state.isLoading = false;
+                state.isAuthenticated = true;
+                state.user = action.payload;
+            })
+            .addCase(registerUser.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload as string;
             })

@@ -11,7 +11,7 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\CustomerController;
-
+use App\Http\Controllers\UserController;
 // Public Authentication Routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -41,4 +41,5 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Phase 9: Dashboard
     Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index']);
+    Route::get('/users', [UserController::class, 'index']);
 });
