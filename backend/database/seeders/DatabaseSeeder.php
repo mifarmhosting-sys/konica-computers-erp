@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
             ['email' => 'admin@konicacomputers.store'],
             [
                 'name' => 'Admin User',
-                'password' => Hash::make('passw0rd'),
+                'password' => Hash::make('password'),
                 'role_id' => $adminRole->id,
                 'email_verified_at' => now(),
             ]
