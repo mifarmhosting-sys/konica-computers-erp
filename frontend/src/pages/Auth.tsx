@@ -10,8 +10,8 @@ import { loginUser } from '../store/slices/authSlice';
 import type { AppDispatch, RootState } from '../store';
 
 const Auth: React.FC = () => {
-  const [email, setEmail] = useState('admin@konicacomputers.store');
-  const [password, setPassword] = useState('passw0rd');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   
   const dispatch = useDispatch<AppDispatch>();
   const { isLoading, error } = useSelector((state: RootState) => state.auth);

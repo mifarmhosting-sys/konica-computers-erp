@@ -31,10 +31,11 @@ class AuthController extends Controller
             'role_id' => $role->id,
         ]);
 
-        Auth::login($user);
+        $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'message' => 'Registration successful',
+            'token' => $token,
             'user' => $user->load('role')
         ], 201);
     }
@@ -52,20 +53,22 @@ class AuthController extends Controller
             ]);
         }
 
-        $request->session()->regenerate();
+        /** @var User $user */
+        $user = Auth::user();
+        $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'message' => 'Login successful',
-            'user' => Auth::user()->load('role')
+            'token' => $token,
+            'user' => $user->load('role')
         ]);
     }
 
     public function logout(Request $request)
     {
-        Auth::guard('web')->logout();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        if ($request->user()) {
+            $request->user()->currentAccessToken()?->delete();
+        }
 
         return response()->json([
             'message' => 'Logged out successfully'

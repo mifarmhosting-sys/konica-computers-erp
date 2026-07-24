@@ -4,7 +4,6 @@ import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { useDispatch } from 'react-redux';
 import { theme } from './theme';
-import api from './services/api';
 import ProtectedRoute from './components/ProtectedRoute';
 import Auth from './pages/Auth';
 import { fetchCurrentUser } from './store/slices/authSlice';
@@ -32,11 +31,7 @@ export default function App() {
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    // 1. Establish CSRF handshake
-    // 2. Fetch the user 
-    api.get('/sanctum/csrf-cookie').finally(() => {
-      dispatch(fetchCurrentUser());
-    });
+    dispatch(fetchCurrentUser());
   }, [dispatch]);
 
   return (

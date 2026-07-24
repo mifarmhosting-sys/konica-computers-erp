@@ -6,8 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Button, TextField, Typography, Container, Paper, Alert } from '@mui/material';
 
 const Login: React.FC = () => {
-    const [email, setEmail] = useState('admin@konicacomputers.store');
-    const [password, setPassword] = useState('password123');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
     

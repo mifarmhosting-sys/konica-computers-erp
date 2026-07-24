@@ -3,14 +3,17 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
+import type { RootState } from '../store';
 
-const ProtectedRoute: React.FC = () => {
-  // Fixed: Added ': any' so TypeScript stays happy
-  const { isAuthenticated, isLoading } = useSelector((state: any) => state.auth);
+interface ProtectedRouteProps {
+  requiredRole?: string;
+}
+
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ requiredRole }) => {
+  const { isAuthenticated, isLoading, user } = useSelector((state: RootState) => state.auth);
 
   if (isLoading) {
     return (
-      // Fixed: Removed the hidden glitch box character before #000
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#000' }}>
         <CircularProgress color="primary" />
       </Box>
@@ -19,6 +22,13 @@ const ProtectedRoute: React.FC = () => {
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
+  }
+
+  if (requiredRole) {
+    const userRole = typeof user?.role === 'object' ? user?.role?.name : user?.role;
+    if (userRole !== requiredRole) {
+      return <Navigate to="/login" replace />;
+    }
   }
 
   return <Outlet />;
